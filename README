@@ -1,0 +1,84 @@
+
+2025/10/17
+用户/密码
+root/root
+yang/yang
+
+
+仅基础更新
+
+Arch Linux ARM aarch64 RootFS
+
+轻量级Arch Linux ARM的aarch64架构根文件系统，适用于嵌入式设备、QEMU模拟器及云原生环境。
+
+📦 项目特性
+特性	描述	引用来源
+架构支持	纯64位ARM架构(aarch64)，兼容树莓派4、QEMU等虚拟化平台
+最小化设计	基础镜像仅包含核心系统组件，可自定义扩展
+实时更新	基于Arch Linux滚动更新机制，提供最新软件包
+跨平台构建	支持通过QEMU进行构建
+
+🚀 快速开始
+依赖要求
+bash
+# Ubuntu/Debian
+sudo apt install qemu-user-static binfmt-support
+
+# Arch Linux
+sudo pacman -S  qemu-user-static-binfmt
+
+
+下载预构建rootfs
+wget xxx.tar.gz
+
+
+🔨 构建指南
+
+
+1. 创建虚拟磁盘
+bash
+# 创建4GB空白镜像
+qemu-img create -f raw archlinux-arm.img 4G
+
+dd if=/dev/zero of=archlinux-arm.img bs=4096 count=512K
+
+
+# 格式化为ext4
+mkfs.ext4 archlinux-arm.img
+
+
+2. 挂载并写入RootFS
+
+sudo mount -t ext4 archlinux-arm.img /mnt
+sudo tar -zxvf ArchLinuxARM-2023.03-aarch64-rootfs.tar.gz -C /mnt
+
+
+3.xx
+
+sudo mount --bind /dev /mnt/dev
+sudo mount -t devpts devpts /mnt/dev/pts -o gid=5,mode=620
+sudo mount -t proc proc /mnt/proc
+sudo mount -t sysfs sysfs /mnt/sys
+sudo mount -t tmpfs tmpfs /mnt/run
+
+# archlinux 需要挂载自身
+sudo mount --bind /mnt /mnt
+
+pacman-key --init
+pacman-key --populate archlinuxarm
+
+
+pacman -Syyu
+
+
+4.打包镜像
+
+sudo umount /mnt
+cd /mnt
+sudo tar -zcvf archlinux-arm.tar.gz *
+
+
+尽情享用你的arch linux arm 吧！
+
+⚠️
+本README由MiniMax-M1生成，引用信息基于2025/10/17前获取的搜索结果
